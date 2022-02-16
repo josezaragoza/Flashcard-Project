@@ -145,6 +145,20 @@ export async function deleteDeck(deckId, signal) {
 }
 
 /**
+ * Retrieves all cards associated with the specified `deckId`.
+ * @param deckId
+ *  the id of the target deck
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<Error|*>}
+ *  a promise that resolves to a possible empty array of cards.
+ */
+export async function listCards(deckId, signal) {
+  const url = `${API_BASE_URL}/cards?deckId=${deckId}`;
+  return await fetchJson(url, { signal });
+}
+
+/**
  * Creates a new card associated with the specified `deckId`.
  * There is no validation that there is an existing deck with the specified `deckId`.
  * @param deckId

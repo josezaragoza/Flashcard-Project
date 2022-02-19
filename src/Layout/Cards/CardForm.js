@@ -15,10 +15,10 @@ export default function CardForm({ mode = "create" }) {
     setFormData({ ...formData, [target.name]: target.value });
 
   useEffect(() => {
-    const abortCon = new AbortController();
+    const abort = new AbortController();
     async function getEditCard() {
       try {
-        const cardToEdit = await readCard(cardId, abortCon.signal);
+        const cardToEdit = await readCard(cardId, abort.signal);
         setFormData({ ...cardToEdit });
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -33,10 +33,10 @@ export default function CardForm({ mode = "create" }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const abortCon = new AbortController();
+    const abort = new AbortController();
     async function addCard() {
       try {
-        await createCard(deckId, formData, abortCon.signal);
+        await createCard(deckId, formData, abort.signal);
         setFormData({ ...initialFormData });
       } catch (error) {
         throw error;
@@ -44,7 +44,7 @@ export default function CardForm({ mode = "create" }) {
     }
     async function editCard() {
       try {
-        await updateCard(formData, abortCon.signal);
+        await updateCard(formData, abort.signal);
         history.push(`/decks/${deckId}`);
       } catch (error) {
         throw error;

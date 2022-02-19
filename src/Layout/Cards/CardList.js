@@ -11,8 +11,8 @@ export default function CardList({ cards }) {
         "Delete this card?\n\n\nYou will not be able to recover it."
       );
       if (result) {
-        const abortCon = new AbortController();
-        await deleteCard(id, abortCon.signal);
+        const abort = new AbortController();
+        await deleteCard(id, abort.signal);
         window.location.reload();
       }
     } catch (error) {

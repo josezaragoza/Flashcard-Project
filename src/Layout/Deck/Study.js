@@ -17,11 +17,11 @@ export default function Study() {
   const history = useHistory();
 
   useEffect(() => {
-    const abortCon = new AbortController();
+    const abort = new AbortController();
     async function getDeck() {
       try {
         if (deckId) {
-          const gotDeck = await readDeck(deckId, abortCon.signal);
+          const gotDeck = await readDeck(deckId, abort.signal);
           setDeck({ ...gotDeck });
           setCount(gotDeck.cards.length);
           setCards([...gotDeck.cards]);
@@ -34,7 +34,7 @@ export default function Study() {
       }
     }
     getDeck();
-    return () => abortCon.abort;
+    return () => abort.abort;
   }, [deckId]);
 
   const reset = () => {

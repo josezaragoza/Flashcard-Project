@@ -9,8 +9,8 @@ export default function DeckList({ decks }) {
         "Delete this deck? You will not be able to recover it."
       );
       if (result) {
-        const abortCon = new AbortController();
-        await deleteDeck(id, abortCon.signal);
+        const abort = new AbortController();
+        await deleteDeck(id, abort.signal);
         window.location.reload();
       }
     } catch (error) {

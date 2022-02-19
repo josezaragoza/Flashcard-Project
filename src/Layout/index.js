@@ -17,11 +17,11 @@ function Layout() {
   useEffect(() => {
     setDecks([]);
 
-    const abortCon = new AbortController();
+    const abort = new AbortController();
 
     async function prepDecks() {
       try {
-        const preppedDecks = await listDecks();
+        const preppedDecks = await listDecks(abort.signal);
         setDecks(preppedDecks);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -32,7 +32,7 @@ function Layout() {
 
     prepDecks();
 
-    return abortCon.abort();
+    return abort.abort();
   }, []);
 
   return (

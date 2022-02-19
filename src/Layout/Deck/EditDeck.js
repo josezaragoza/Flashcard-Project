@@ -10,10 +10,10 @@ export default function EditDeck() {
   const { deckId } = useParams();
 
   useEffect(() => {
-    const abortCon = new AbortController();
+    const abort = new AbortController();
     async function getCurrentDeck() {
       try {
-        const currentDeck = await readDeck(deckId, abortCon.signal);
+        const currentDeck = await readDeck(deckId, abort.signal);
         setDeck({ ...currentDeck });
       } catch (error) {
         if (error.name !== "AbortError") {

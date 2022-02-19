@@ -11,11 +11,11 @@ export default function Deck(handleDeckDelete) {
   const [deck, setDeck] = useState({});
 
   useEffect(() => {
-    const abortCon = new AbortController();
+    const abort = new AbortController();
     async function getDeck() {
       try {
         if (deckId) {
-          const gotDeck = await readDeck(deckId, abortCon.signal);
+          const gotDeck = await readDeck(deckId, abort.signal);
           setDeck({ ...gotDeck });
         }
       } catch (error) {
@@ -25,7 +25,7 @@ export default function Deck(handleDeckDelete) {
       }
     }
     getDeck();
-    return () => abortCon.abort;
+    return () => abort.abort;
   }, [deckId]);
 
   async function handleDelete(id) {

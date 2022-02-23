@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../NavBar";
 import CardForm from "./CardForm";
 import { readDeck } from "../../utils/api";
+import NotFound from "../NotFound";
 
 export default function AddCard() {
   const { deckId } = useParams();
   const [deck, setDeck] = useState({});
+  const [error, setError] = useState([]);
 
   useEffect(() => {
     const abort = new AbortController();
@@ -16,15 +18,17 @@ export default function AddCard() {
           const gotDeck = await readDeck(deckId, abort.signal);
           setDeck({ ...gotDeck });
         }
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          throw error;
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError((currErr) => [...currErr, err]);
         }
       }
     }
     getDeck();
-    return () => abort.abort;
+    return () => abort.abort();
   }, [deckId]);
+
+  if (error[0]) return <NotFound />;
 
   return (
     <>

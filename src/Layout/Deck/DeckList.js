@@ -1,22 +1,30 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import NotFound from "../NotFound.js";
 import { deleteDeck } from "../../utils/api/index.js";
 
 export default function DeckList({ decks }) {
+  const [error, setError] = useState([]);
 
   async function handleDelete(id) {
+    const abort = new AbortController();
     try {
       const result = window.confirm(
-        "Delete this deck? You will not be able to recover it."
+        "Delete this deck?\n\n\nYou will not be able to recover it."
       );
       if (result) {
-        const abort = new AbortController();
         await deleteDeck(id, abort.signal);
         window.location.reload();
       }
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        setError((currErr) => [...currErr, err]);
+      }
     }
+    return () => abort.abort();
   }
+
+  if (error[0]) return <NotFound />;
 
   return (
     <>

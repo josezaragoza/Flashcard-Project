@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
-export default function NotEnoughCards({ name, id, cards }) {
+export default function NotEnoughCards({ id, cards }) {
   return (
     <div className="d-flex flex-column">
       <h3>Not enough cards.</h3>
       <p>
-        You need at least 3 cards to study. There are {cards} cards in this
+        You need a minimum of 3 cards to study. There are {cards} cards in this
         deck.
       </p>
       <div>

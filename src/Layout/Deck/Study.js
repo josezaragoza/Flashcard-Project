@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavBar from "../NavBar";
 import { readDeck } from "../../utils/api";
 import Card from "../Cards/Card";
 import NotEnoughCards from "../Cards/NotEnoughCards";
+import NotFound from "../NotFound";
 
 export default function Study() {
   const [deck, setDeck] = useState({});
@@ -12,6 +13,7 @@ export default function Study() {
   const [card, setCard] = useState({});
   const [nextIndex, setNextIndex] = useState(1);
   const [flipped, setFlipped] = useState(false);
+  const [error, setError] = useState([]);
 
   const { deckId } = useParams();
   const history = useHistory();
@@ -27,14 +29,14 @@ export default function Study() {
           setCards([...gotDeck.cards]);
           setCard({ ...gotDeck.cards[0] });
         }
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          throw error;
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError((currErr) => [...currErr, err]);
         }
       }
     }
     getDeck();
-    return () => abort.abort;
+    return () => abort.abort();
   }, [deckId]);
 
   const reset = () => {
@@ -59,6 +61,8 @@ export default function Study() {
       response ? reset() : history.push("/");
     }
   };
+
+  if (error[0]) return <NotFound />;
 
   return (
     <>

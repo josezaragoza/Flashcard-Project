@@ -1,24 +1,32 @@
+import React, { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import NotFound from "../NotFound";
 import { deleteCard } from "../../utils/api";
 
 export default function CardList({ cards }) {
   const history = useHistory();
   const { url } = useRouteMatch();
+  const [error, setError] = useState([]);
 
   async function handleDelete(id) {
+    const abort = new AbortController();
     try {
       const result = window.confirm(
         "Delete this card?\n\n\nYou will not be able to recover it."
       );
       if (result) {
-        const abort = new AbortController();
         await deleteCard(id, abort.signal);
         window.location.reload();
       }
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        setError((currErr) => [...currErr, err]);
+      }
     }
+    return () => abort.abort();
   }
+
+  if (error[0]) return <NotFound />;
 
   return (
     cards && (

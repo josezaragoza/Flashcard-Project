@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
+import NotFound from "../NotFound";
 import { createDeck, readDeck, updateDeck } from "../../utils/api";
 
 export default function DeckForm({ mode }) {
@@ -11,52 +12,57 @@ export default function DeckForm({ mode }) {
     description: "",
   };
   const [formData, setFormData] = useState({ ...initialFormData });
+  const [error, setError] = useState([]);
 
   const handleChange = ({ target }) =>
     setFormData({ ...formData, [target.name]: target.value });
 
   useEffect(() => {
-    const abortCon = new AbortController();
+    const abort = new AbortController();
 
     async function getEditDeck() {
       try {
-        const deckToEdit = await readDeck(deckId, abortCon.signal);
+        const deckToEdit = await readDeck(deckId, abort.signal);
         setFormData({ ...deckToEdit });
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          throw error;
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError((currErr) => [...currErr, err]);
         }
       }
     }
     if (mode === "edit") {
       getEditDeck();
     }
+    return () => abort.abort();
   }, [deckId, mode]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const abortCon = new AbortController();
+    const abort = new AbortController();
     async function createNewDeck() {
       try {
-        const createdDeck = await createDeck(formData, abortCon.signal);
+        const createdDeck = await createDeck(formData, abort.signal);
         setFormData({ ...initialFormData });
         history.push(`/decks/${createdDeck.id}`);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          throw error;
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError((currErr) => [...currErr, err]);
         }
       }
     }
     async function editDeck() {
       try {
-        await updateDeck(formData, abortCon.signal);
+        await updateDeck(formData, abort.signal);
         history.push(`/decks/${deckId}`);
-      } catch (error) {
-        throw error;
+      } catch (err) {
+        setError((currErr) => [...currErr, err]);
       }
     }
     mode === "create" ? createNewDeck() : editDeck();
+    return () => abort.abort();
   };
+
+  if (error[0]) return <NotFound />;
 
   return (
     <div className="d-flex flex-column">

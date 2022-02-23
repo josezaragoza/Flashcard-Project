@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../NavBar";
+import NotFound from "../NotFound";
 import { readDeck } from "../../utils/api";
 import DeckForm from "./DeckForm";
 
 export default function EditDeck() {
   const [deck, setDeck] = useState({});
+  const [error, setError] = useState([]);
 
   const { deckId } = useParams();
 
@@ -15,14 +17,17 @@ export default function EditDeck() {
       try {
         const currentDeck = await readDeck(deckId, abort.signal);
         setDeck({ ...currentDeck });
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          throw error;
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError((currErr) => [...currErr, err]);
         }
       }
     }
     getCurrentDeck();
+    return abort.abort();
   }, [deckId]);
+
+  if (error[0]) return <NotFound />;
 
   return (
     <>

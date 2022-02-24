@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import NotFound from "../NotFound";
+// import NotFound from "../NotFound";
 import { createDeck, readDeck, updateDeck } from "../../utils/api";
 
 export default function DeckForm({ mode }) {
@@ -38,6 +38,11 @@ export default function DeckForm({ mode }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError([]);
+    if (formData.name.trim() === "" || formData.description.trim() === "") {
+      setError((currErr) => [...currErr, "* Please fill in all fields *"]);
+      return;
+    }
     const abort = new AbortController();
     async function createNewDeck() {
       try {
@@ -62,10 +67,11 @@ export default function DeckForm({ mode }) {
     return () => abort.abort();
   };
 
-  if (error[0]) return <NotFound />;
+  // if (error[0]) return <NotFound />;
 
   return (
     <div className="d-flex flex-column">
+      {error.length > 0 && error.map((err, i) => <p key={i}>{err}</p>)}
       <form className="col-12" onSubmit={handleSubmit}>
         <div className="row form-group">
           <label htmlFor="name">Name</label>
@@ -77,6 +83,7 @@ export default function DeckForm({ mode }) {
             value={formData.name}
             onChange={handleChange}
             placeholder="Deck Name"
+            // required
           />
         </div>
         <div className="row form-group">
@@ -89,6 +96,7 @@ export default function DeckForm({ mode }) {
             value={formData.description}
             onChange={handleChange}
             placeholder="Brief description of the deck"
+            // required
           />
         </div>
         <div className="row">

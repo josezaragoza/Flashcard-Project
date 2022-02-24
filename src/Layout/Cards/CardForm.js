@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import NotFound from "../NotFound";
+// import NotFound from "../NotFound";
 import { createCard, readCard, updateCard } from "../../utils/api";
 
 export default function CardForm({ mode = "create" }) {
@@ -24,7 +24,7 @@ export default function CardForm({ mode = "create" }) {
         setFormData({ ...cardToEdit });
       } catch (err) {
         if (err.name !== "AbortError") {
-          setError((currErr) => [...currErr, err]);
+          setError((currErr) => [...currErr, err.message]);
         }
       }
     }
@@ -36,6 +36,11 @@ export default function CardForm({ mode = "create" }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError([]);
+    if (formData.front.trim() === "" || formData.back.trim() === "") {
+      setError((currErr) => [...currErr, "* Please fill in all fields *"]);
+      return;
+    }
     const abort = new AbortController();
     async function addCard() {
       try {
@@ -56,10 +61,11 @@ export default function CardForm({ mode = "create" }) {
     mode === "edit" ? editCard() : addCard();
   };
 
-  if (error[0]) return <NotFound />;
+  // if (error[0]) return <NotFound />;
 
   return (
     <div className="d-flex flex-column">
+      {error.length > 0 && error.map((err, i) => <p key={i}>{err}</p>)}
       <form className="col-12" onSubmit={handleSubmit}>
         <div className="row form-group">
           <label htmlFor="front">Front</label>
@@ -71,6 +77,7 @@ export default function CardForm({ mode = "create" }) {
             value={formData.front}
             onChange={handleChange}
             placeholder="Front side of card"
+            // required
           />
         </div>
         <div className="row form-group">
@@ -83,6 +90,7 @@ export default function CardForm({ mode = "create" }) {
             value={formData.back}
             onChange={handleChange}
             placeholder="Back side of card"
+            // required
           />
         </div>
         <div className="row">

@@ -9,7 +9,7 @@ export default function CreateDeck() {
         <NavBar pageName={"Create Deck"} />
       </div>
       <div className="d-flex flex-column">
-        <h2>Create Deck</h2>
+        <h2>Create A Deck</h2>
         <DeckForm mode="create" />
       </div>
     </>

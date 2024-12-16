@@ -1,0 +1,76 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "npm install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "build": {
+      "name": "build",
+      "command": "npm run build",
+      "runAtStart": false
+    },
+    "docker:build": {
+      "name": "docker:build",
+      "command": "npm run docker:build",
+      "runAtStart": false
+    },
+    "docker:run": {
+      "name": "docker:run",
+      "command": "npm run docker:run",
+      "runAtStart": false
+    },
+    "docker:stop": {
+      "name": "docker:stop",
+      "command": "npm run docker:stop",
+      "runAtStart": false
+    },
+    "docker:test": {
+      "name": "docker:test",
+      "command": "npm run docker:test",
+      "runAtStart": false
+    },
+    "eject": {
+      "name": "eject",
+      "command": "npm run eject",
+      "runAtStart": false
+    },
+    "start": {
+      "name": "start",
+      "command": "npm run start",
+      "runAtStart": true,
+      "preview": {
+        "port": 8080
+      }
+    },
+    "start:react": {
+      "name": "start:react",
+      "command": "npm run start:react",
+      "runAtStart": false
+    },
+    "start:server": {
+      "name": "start:server",
+      "command": "npm run start:server",
+      "runAtStart": false
+    },
+    "start:solution": {
+      "name": "start:solution",
+      "command": "npm run start:solution",
+      "runAtStart": false
+    },
+    "test": {
+      "name": "test",
+      "command": "npm run test",
+      "runAtStart": false
+    },
+    "test:solution": {
+      "name": "test:solution",
+      "command": "npm run test:solution",
+      "runAtStart": false
+    }
+  }
+}
